@@ -3909,27 +3909,6 @@ var pxt;
             });
         }
         function downloadHexInfoLocalAsync(extInfo) {
-            if (pxt.webConfig && pxt.webConfig.isStatic) {
-                return pxt.Util.requestAsync({
-                    url: pxt.webConfig.cdnUrl + "hexcache/" + extInfo.sha + ".hex"
-                })
-                    .then(function (resp) {
-                    if (resp.text) {
-                        var result = {
-                            enums: [],
-                            functions: [],
-                            hex: resp.text.split(/\r?\n/)
-                        };
-                        return Promise.resolve(result);
-                    }
-                    pxt.log("Hex info not found in bundled hex cache");
-                    return Promise.resolve();
-                })
-                    .catch(function (e) {
-                    pxt.log("Error fetching hex info from bundled hex cache");
-                    return Promise.resolve();
-                });
-            }
             if (!pxt.Cloud.localToken || !window || !pxt.Cloud.isLocalHost()) {
                 return Promise.resolve();
             }
@@ -11275,7 +11254,7 @@ var pxt;
         }
         Cloud.localRequestAsync = localRequestAsync;
         function privateRequestAsync(options) {
-            options.url = pxt.webConfig && pxt.webConfig.isStatic && !options.forceLiveEndpoint ? pxt.webConfig.relprefix + options.url : Cloud.apiRoot + options.url;
+            options.url = pxt.webConfig && pxt.webConfig.isStatic ? pxt.webConfig.relprefix + options.url : Cloud.apiRoot + options.url;
             options.allowGzipPost = true;
             if (!Cloud.isOnline()) {
                 return offlineError(options.url);
@@ -11304,9 +11283,8 @@ var pxt;
             return privateRequestAsync({ url: path }).then(function (resp) { return resp.text; });
         }
         Cloud.privateGetTextAsync = privateGetTextAsync;
-        function privateGetAsync(path, forceLiveEndpoint) {
-            if (forceLiveEndpoint === void 0) { forceLiveEndpoint = false; }
-            return privateRequestAsync({ url: path, forceLiveEndpoint: forceLiveEndpoint }).then(function (resp) { return resp.json; });
+        function privateGetAsync(path) {
+            return privateRequestAsync({ url: path }).then(function (resp) { return resp.json; });
         }
         Cloud.privateGetAsync = privateGetAsync;
         function downloadTargetConfigAsync() {
@@ -11320,28 +11298,16 @@ var pxt;
         }
         Cloud.downloadTargetConfigAsync = downloadTargetConfigAsync;
         function downloadScriptFilesAsync(id) {
-            return privateRequestAsync({ url: id + "/text", forceLiveEndpoint: true }).then(function (resp) {
+            return privateRequestAsync({ url: id + "/text" }).then(function (resp) {
                 return JSON.parse(resp.text);
             });
         }
         Cloud.downloadScriptFilesAsync = downloadScriptFilesAsync;
         function downloadMarkdownAsync(docid, locale, live) {
             var packaged = pxt.webConfig && pxt.webConfig.isStatic;
-            var url;
-            if (packaged) {
-                url = docid;
-                var isUnderDocs = /\/docs\//.test(url);
-                var hasExt = /\.\w+$/.test(url);
-                if (!isUnderDocs) {
-                    url = "docs/" + url;
-                }
-                if (!hasExt) {
-                    url = url + ".md";
-                }
-            }
-            else {
-                url = "md/" + pxt.appTarget.id + "/" + docid.replace(/^\//, "") + "?targetVersion=" + encodeURIComponent(pxt.webConfig.targetVersion);
-            }
+            var url = packaged
+                ? "docs/" + docid + ".md"
+                : "md/" + pxt.appTarget.id + "/" + docid.replace(/^\//, "") + "?targetVersion=" + encodeURIComponent(pxt.webConfig.targetVersion);
             if (!packaged && locale != "en") {
                 url += "&lang=" + encodeURIComponent(Util.userLanguage());
                 if (live)
@@ -11362,9 +11328,8 @@ var pxt;
             return privateRequestAsync({ url: path, method: "DELETE" }).then(function (resp) { return resp.json; });
         }
         Cloud.privateDeleteAsync = privateDeleteAsync;
-        function privatePostAsync(path, data, forceLiveEndpoint) {
-            if (forceLiveEndpoint === void 0) { forceLiveEndpoint = false; }
-            return privateRequestAsync({ url: path, data: data || {}, forceLiveEndpoint: forceLiveEndpoint }).then(function (resp) { return resp.json; });
+        function privatePostAsync(path, data) {
+            return privateRequestAsync({ url: path, data: data || {} }).then(function (resp) { return resp.json; });
         }
         Cloud.privatePostAsync = privatePostAsync;
         function isLoggedIn() { return !!Cloud.accessToken; }

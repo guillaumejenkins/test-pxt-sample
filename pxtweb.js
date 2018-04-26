@@ -206,11 +206,10 @@ var pxt;
         }
     }
     /**
-     * Checks for winrt and pxt-electron
+     * Checks for winrt
      */
     function isNativeApp() {
-        return typeof Windows !== "undefined" ||
-            (typeof window !== "undefined" && !!window.pxtElectron);
+        return typeof Windows !== "undefined";
     }
     /**
      * checks for sandbox

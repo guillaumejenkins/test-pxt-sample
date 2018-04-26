@@ -23,9 +23,9 @@ var pxtTargetBundle = {
     "autoRun": true
   },
   "appTheme": {
-    "logo": "docs/static/logo.svg",
-    "organizationLogo": "docs/static/Microsoft-logo_rgb_c-white.png",
-    "organizationWideLogo": "docs/static/Microsoft-logo_rgb_c-white.png",
+    "logo": "docs\\static\\logo.svg",
+    "organizationLogo": "docs\\static\\Microsoft-logo_rgb_c-white.png",
+    "organizationWideLogo": "docs\\static\\Microsoft-logo_rgb_c-white.png",
     "logoUrl": "/test-pxt-sample/",
     "homeUrl": "/test-pxt-sample/",
     "privacyUrl": "https://go.microsoft.com/fwlink/?LinkId=521839",
@@ -34,18 +34,18 @@ var pxtTargetBundle = {
     "docMenu": [
       {
         "name": "About",
-        "path": "/test-pxt-sample/docs/about"
+        "path": "/test-pxt-sample/docs/about.html"
       },
       {
         "name": "Docs",
-        "path": "/test-pxt-sample/docs/docs"
+        "path": "/test-pxt-sample/docs/docs.html"
       }
     ],
     "coloredToolbox": false,
     "monacoToolbox": true,
     "invertedMenu": true,
     "showHomeScreen": true,
-    "homeScreenHero": "docs/static/hero.png",
+    "homeScreenHero": "docs\\static\\hero.png",
     "blocklyOptions": {
       "grid": {
         "spacing": 45,
@@ -527,7 +527,7 @@ var pxtTargetBundle = {
     "vtableShift": 2
   },
   "versions": {
-    "target": "2.0.2",
+    "target": "2.0.3",
     "pxt": "3.12.1"
   }
 }
